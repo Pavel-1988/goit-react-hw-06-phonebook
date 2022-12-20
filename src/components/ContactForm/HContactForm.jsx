@@ -1,15 +1,22 @@
 
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setContact } from 'redux/ContactSlice';
+import { getStatusContact } from 'redux/selectors';
+
 import { FormContainer, ListSpan } from './ContactForm.styled';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 import Notiflix from 'notiflix';
 // import { Report } from 'notiflix/build/notiflix-report-aio';
 
-export const HContactForm = ({onSubmit, contactsName }) => {
+export const HContactForm = () => {
    
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+
+  const contacts = useSelector(getStatusContact);
+  const dispatch = useDispatch();
 
   const nameInputId = nanoid();
   const numberInputId = nanoid();
@@ -28,8 +35,10 @@ export const HContactForm = ({onSubmit, contactsName }) => {
     }
   };
 
-  const onSubmitForm = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    const contactsName = contacts.map(contact => contact.name)
+
     const filterName = contactsName.some(
       contactName => contactName.toLowerCase() === name.toLowerCase()
     );
@@ -46,9 +55,14 @@ export const HContactForm = ({onSubmit, contactsName }) => {
       number,
     };
 
-    onSubmit(newContact);
+    formSubmitHandler(newContact);
     reset();
   };
+
+  const formSubmitHandler = (newConatct) => {
+    dispatch(setContact(newConatct));
+    Notiflix.Notify.success('You have just created a new contact');
+  }
 
   const reset = () => {
     setName('');
@@ -56,8 +70,8 @@ export const HContactForm = ({onSubmit, contactsName }) => {
   };
 
    return (
-      <FormContainer  onSubmit={onSubmitForm}>
-        <label >
+      <FormContainer  onSubmit={handleSubmit}>
+        <label htmlFor={nameInputId} >
           <ListSpan >Name</ListSpan>
           <input
             onChange={onHandleChange}
@@ -70,7 +84,7 @@ export const HContactForm = ({onSubmit, contactsName }) => {
             required
           />
         </label>
-        <label  >
+        <label htmlFor={numberInputId} >
           <ListSpan >Number</ListSpan>
           <input
             onChange={onHandleChange}
@@ -90,7 +104,7 @@ export const HContactForm = ({onSubmit, contactsName }) => {
     )
 }
 
-HContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  contactsName: PropTypes.arrayOf(PropTypes.string.isRequired),
-};
+// HContactForm.propTypes = {
+//   onSubmit: PropTypes.func.isRequired,
+//   contactsName: PropTypes.arrayOf(PropTypes.string.isRequired),
+// };
