@@ -27,6 +27,3 @@ export const ListItem = styled.li`
   }
 `
 
-export const ListSpan = styled.span`
-  margin-right: 7px
-`;

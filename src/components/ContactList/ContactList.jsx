@@ -1,17 +1,36 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import {List,  ListItem,ListSpan } from './ContactList.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteContact } from 'redux/ContactSlice';
+import { getStatusFilter, getStatusContact } from 'redux/selectors';
+import {List,  ListItem } from './ContactList.styled';
 
 
-export function ContactList ({ contactsList, onDeleteContact }) {
+export function ContactList() {
+  
+  const filter = useSelector(getStatusFilter);
+  const contacts = useSelector(getStatusContact)
+  const dispatch = useDispatch();
+
+  const contactsList = () => {
+    const normalizedFilter = filter.toLowerCase();
+    return contacts.filter(contact =>
+    contact.name.toLowerCase().includes(normalizedFilter))
+  }
+
+  const deleteContacts = (contactId) => {
+    dispatch(deleteContact(contactId))
+  }
+
   return (
     <List>
-      {contactsList.map(({id, name, number}) => (
+      {contactsList().map(({id, name, number}) => (
         <ListItem key={id}>
-          {name}
-          <ListSpan>:</ListSpan>
-          {number}
-          <button onClick={() => onDeleteContact(id)}>Delete</button>
+          <p>
+            {name} : {number}
+          </p>          
+          <button onClick={() => deleteContacts(id)}>
+            Delete
+          </button>
         </ListItem>
       ))}
      </List>
@@ -20,22 +39,13 @@ export function ContactList ({ contactsList, onDeleteContact }) {
 
 
 
-ContactList.propTypes = {
-	contactsList: PropTypes.arrayOf(
-		PropTypes.shape({
-			id: PropTypes.string.isRequired,
-			name: PropTypes.string.isRequired,
-			number: PropTypes.string.isRequired,
-		 })
-		).isRequired,
-	onDeleteContact: PropTypes.func.isRequired,
-}
-
-// ContactList.prototype = {
-//   contacts: PropTypes.shape({
-//     id: PropTypes.string.isRequired,
-//     name: PropTypes.string.isRequired,
-//     number: PropTypes.string.isRequired,
-//   }),
-//   onDeleteContact: PropTypes.func.isRequired,
-// };
+// ContactList.propTypes = {
+// 	contactsList: PropTypes.arrayOf(
+// 		PropTypes.shape({
+// 			id: PropTypes.string.isRequired,
+// 			name: PropTypes.string.isRequired,
+// 			number: PropTypes.string.isRequired,
+// 		 })
+// 		).isRequired,
+// 	onDeleteContact: PropTypes.func.isRequired,
+// }

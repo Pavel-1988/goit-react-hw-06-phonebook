@@ -1,14 +1,11 @@
-
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setContact } from 'redux/ContactSlice';
 import { getStatusContact } from 'redux/selectors';
 
 import { FormContainer, ListSpan } from './ContactForm.styled';
-// import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 import Notiflix from 'notiflix';
-// import { Report } from 'notiflix/build/notiflix-report-aio';
 
 export const HContactForm = () => {
    
@@ -43,10 +40,6 @@ export const HContactForm = () => {
       contactName => contactName.toLowerCase() === name.toLowerCase()
     );
     if (filterName) {
-      // Report.warning(
-      //     `${name}`,
-      //     'This user is already in the contact list.',
-      //     'OK')
 		return  Notiflix.Notify.failure('You already have a contact with that name');
     }
      const newContact = {
@@ -103,8 +96,3 @@ export const HContactForm = () => {
     </FormContainer>
     )
 }
-
-// HContactForm.propTypes = {
-//   onSubmit: PropTypes.func.isRequired,
-//   contactsName: PropTypes.arrayOf(PropTypes.string.isRequired),
-// };
